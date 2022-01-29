@@ -19,6 +19,8 @@ st.set_page_config(
 
 
 st.title('See Breeze')
+st.markdown('_Interactive tool for monitoring and predicting data at NOAA weather stations_')
+
 # image = Image.open('/Users/michaelwong/Desktop/468px-NOAA_logo.svg.png')
 # st.image(image, width = 100, caption='(Not affiliated)')
 
@@ -37,20 +39,18 @@ def load_data():
 
     return data
 
-st.subheader('Wind Speed for the Past 45 days')
 
 selected_station = st.sidebar.selectbox(label='Station', index=0, options=STATIONS)
 DATA_URL = f'https://www.ndbc.noaa.gov/data/realtime2/{selected_station}.txt'
 
-data_load_state = st.text('Loading data...')
+# data_load_state = st.text('Loading data...')
 data = load_data()
-data_load_state.text(f'Loaded data for {selected_station}!')
+# data_load_state.text(f'Loaded data for {selected_station}!')
 
 #line chart
+st.subheader(f'Wind Speed at {selected_station}')
 
-np.random.seed(42)
 source = data
-# source = source.reset_index().melt('Time', var_name='Station', value_name='Wind Direction (in m/s)')
 
 # Create a selection that chooses the nearest point & selects based on x-value
 nearest = alt.selection(type='single', nearest=True, on='mouseover',
@@ -170,8 +170,6 @@ st.pydeck_chart(pdk.Deck(
     tooltip=tooltip
 ))
 
-
-
 #MAP ENDS
 
 min_date, max_date = data.index.min(), data.index.max()
@@ -197,7 +195,7 @@ fig = go.Figure(
 )
 
 fig.update_layout(
-    title=f'Mean wind on {date}',
+    title=f'Mean wind (m/s) on {date}',
     title_x=0.5,
     title_y=0,
     showlegend=False,
