@@ -17,10 +17,8 @@ st.set_page_config(
 
 
 st.title('See Breeze')
-image = Image.open('/Users/michaelwong/Desktop/468px-NOAA_logo.svg.png')
-
-st.image(image, width = 100, caption='(Not affiliated)')
-
+# image = Image.open('/Users/michaelwong/Desktop/468px-NOAA_logo.svg.png')
+# st.image(image, width = 100, caption='(Not affiliated)')
 
 @st.cache
 def load_data():
