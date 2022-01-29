@@ -32,6 +32,9 @@ def load_data():
         skiprows=[1]
     )
     data = data.replace('MM', np.nan)
+    data['WSPD'] = data['WSPD'].astype(float)
+    data['WDIR'] = data['WDIR'].astype(float)
+
     return data
 
 selected_station = st.sidebar.selectbox(label='Station', index=0, options=STATIONS)
@@ -53,8 +56,8 @@ date = st.sidebar.date_input(
 ).strftime('%Y %m %d')
 rows_for_day = data.loc[date]
 
-mean_wind_speed = rows_for_day['WSPD'].astype(float).mean()
-mean_wind_direction = rows_for_day['WDIR'].astype(float).mean()
+mean_wind_speed = rows_for_day['WSPD'].mean()
+mean_wind_direction = rows_for_day['WDIR'].mean()
 
 #polar plot
 fig = go.Figure(
@@ -85,31 +88,30 @@ st.sidebar.plotly_chart(fig, config={ 'staticPlot': True })
 #line chart
 
 np.random.seed(42)
-source = pd.DataFrame(np.cumsum(np.random.randn(100, 3), 0).round(2),
-                    columns=['KMIS', 'KAPT', 'KIKT'], index=pd.RangeIndex(100, name='Time'))
-
-source = source.reset_index().melt('Time', var_name='Station', value_name='Wind Direction (in m/s)')
+source = data
+# source = source.reset_index().melt('Time', var_name='Station', value_name='Wind Direction (in m/s)')
 
 # Create a selection that chooses the nearest point & selects based on x-value
 nearest = alt.selection(type='single', nearest=True, on='mouseover',
-                        fields=['Time'], empty='none')
+                        fields=['#YY_MM_DD'], empty='none')
+
+source = source.groupby('#YY_MM_DD').agg({ 'WSPD': 'mean' })
 
 # The basic line
-line = alt.Chart(source).mark_line(interpolate='basis').encode(
-    x='Time:Q',
-    y='Wind Direction (in m/s):Q',
-    color='Station:N'
+line = alt.Chart(source.reset_index()).mark_line().encode(
+    x='#YY_MM_DD:T',
+    y='WSPD:Q',
 )
 
 # Transparent selectors across the chart. This is what tells us
 # the x-value of the cursor
 selectors = alt.Chart(source).mark_point().encode(
-    x='Time:Q',
+    x='#YY_MM_DD:T',
     opacity=alt.value(0),
 ).add_selection(
     nearest
 ).properties(
-    title='Wind Direction for the Past 45 Days'
+    title='Wind Speed for the Past 45 Days'
 )
 selectors.configure_title(
     fontSize=40,
@@ -124,13 +126,13 @@ points = line.mark_point().encode(
 
 # Draw text labels near the points, and highlight based on selection
 text = line.mark_text(align='left', dx=5, dy=-5).encode(
-    text=alt.condition(nearest, 'Wind Direction (in m/s):Q', alt.value(' '))
+    text=alt.condition(nearest, 'WSPD:Q', alt.value(' '))
 )
 
 
 # Draw a rule at the location of the selection
 rules = alt.Chart(source).mark_rule(color='gray').encode(
-    x='Time:Q',
+    x='#YY_MM_DD:T',
 ).transform_filter(
     nearest
 )
@@ -142,4 +144,4 @@ base = alt.layer(
     width=600, height=300
 )
 
-base
+st.altair_chart(base, use_container_width=True)
