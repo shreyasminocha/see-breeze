@@ -8,6 +8,12 @@ import numpy as np
 
 STATIONS = ['KIKT', 'KBQX', 'KMIS']
 
+st.set_page_config(
+    page_title='See Breeze',
+    page_icon='🌪️',
+    initial_sidebar_state='expanded',
+)
+
 st.title('See Breeze')
 
 @st.cache
