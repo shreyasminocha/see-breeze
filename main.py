@@ -12,7 +12,8 @@ st.title('This Blows')
 
 @st.cache
 def load_data():
-    data = pd.read_csv(DATA_URL, delim_whitespace=True)
+    data = pd.read_csv(DATA_URL, delim_whitespace=True, parse_dates=[[0, 1, 2]], index_col='#YY_MM_DD')
+    data = data.replace('MM', np.nan)
     return data
 
 st.subheader('Number of pickups by hour')
@@ -26,20 +27,19 @@ data_load_state.text('Done! (using st.cache)')
 
 #plot
 st.subheader('Wind Speed for the Past 45 days')
-chart_data = pd.DataFrame(
-     np.random.randn(20, 3),
-     columns=['KIKT', 'KAPT', 'KMIS'])
+chart_data = pd.DataFrame(np.random.randn(20, 3))
 
 st.line_chart(chart_data)
 
 #plotly chart
-date = st.sidebar.date_input(label='Day')
+date = st.sidebar.date_input(label='Day').strftime('%Y %m %d')
+rows_for_day = data.loc[date]
 
 #polar plot
 fig = go.Figure(data=
     go.Scatterpolar(
-        r = [0.5, 1, 2, 2.5, 3, 4],
-        theta = [35, 70, 120, 155, 205, 240],
+        r = [rows_for_day['WSPD'].astype(float).mean()],
+        theta = [rows_for_day['WDIR'].astype(float).mean()],
         mode = 'markers',
     ))
 
