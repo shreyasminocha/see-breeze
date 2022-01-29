@@ -11,6 +11,9 @@ import pydeck as pdk
 
 STATIONS = ['KIKT', 'KATP', 'KMIS']
 
+def station_data_url(station):
+    return f'https://www.ndbc.noaa.gov/data/realtime2/{station}.txt'
+
 st.set_page_config(
     page_title='See Breeze',
     page_icon='🌪️',
@@ -25,9 +28,9 @@ st.markdown('_Interactive tool for monitoring and predicting data at NOAA weathe
 # st.image(image, width = 100, caption='(Not affiliated)')
 
 @st.cache
-def load_data():
+def load_data(station):
     data = pd.read_csv(
-        DATA_URL,
+        station_data_url(station),
         delim_whitespace=True,
         parse_dates=[[0, 1, 2]],
         index_col='#YY_MM_DD',
@@ -41,10 +44,9 @@ def load_data():
 
 
 selected_station = st.sidebar.selectbox(label='Station', index=0, options=STATIONS)
-DATA_URL = f'https://www.ndbc.noaa.gov/data/realtime2/{selected_station}.txt'
 
 # data_load_state = st.text('Loading data...')
-data = load_data()
+data = load_data(selected_station)
 # data_load_state.text(f'Loaded data for {selected_station}!')
 
 #line chart
