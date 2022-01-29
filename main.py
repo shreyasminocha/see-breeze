@@ -49,17 +49,32 @@ date = st.sidebar.date_input(
 ).strftime('%Y %m %d')
 rows_for_day = data.loc[date]
 
+mean_wind_speed = rows_for_day['WSPD'].astype(float).mean()
+mean_wind_direction = rows_for_day['WDIR'].astype(float).mean()
+
 #polar plot
 fig = go.Figure(data=
     go.Scatterpolar(
-        r = [rows_for_day['WSPD'].astype(float).mean()],
-        theta = [rows_for_day['WDIR'].astype(float).mean()],
-        mode = 'markers',
+        r=[0, mean_wind_speed],
+        theta=[0, mean_wind_direction],
+        mode='lines+markers',
     ))
 
-fig.update_layout(showlegend=False)
+fig.update_layout(
+    showlegend=False,
+    polar={
+        'radialaxis': {
+            'range': [0, max(15, 1.5 * mean_wind_speed)],
+            'dtick': 5,
+        },
+    },
+    margin={
+        't': 0, 'r': 0, 'b': 0, 'l': 0,
+        'pad': 1,
+    }
+)
 
-st.plotly_chart(fig, use_container_width=True)
+st.sidebar.plotly_chart(fig, use_container_width=True)
 
 #line chart
 
