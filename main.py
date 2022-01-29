@@ -13,7 +13,13 @@ st.title('This Blows')
 
 @st.cache
 def load_data():
-    data = pd.read_csv(DATA_URL, delim_whitespace=True, parse_dates=[[0, 1, 2]], index_col='#YY_MM_DD')
+    data = pd.read_csv(
+        DATA_URL,
+        delim_whitespace=True,
+        parse_dates=[[0, 1, 2]],
+        index_col='#YY_MM_DD',
+        skiprows=[1]
+    )
     data = data.replace('MM', np.nan)
     return data
 
@@ -32,8 +38,15 @@ chart_data = pd.DataFrame(np.random.randn(20, 3))
 
 st.line_chart(chart_data)
 
-#plotly chart
-date = st.sidebar.date_input(label='Day').strftime('%Y %m %d')
+
+min_date, max_date = data.index.min(), data.index.max()
+
+date = st.sidebar.date_input(
+    label='Day',
+    min_value=min_date,
+    max_value=max_date,
+    value=max_date,
+).strftime('%Y %m %d')
 rows_for_day = data.loc[date]
 
 #polar plot
