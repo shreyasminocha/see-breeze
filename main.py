@@ -124,7 +124,17 @@ st.altair_chart(predicted, use_container_width=True)
 #MAP BEGINS
 st.subheader('Station Map')
 
-d1 = {'lat': [28.521, 29.296, 27.195], 'lon': [-88.289, -88.842, -90.027], 'name':['KIKT', 'KMIS','KATP'], 'cWind':[3.6, 6.17, 7.2], 'cDirection':[300, 350, 330]}
+station_data = [load_data(x) for x in STATIONS]
+station_winds = [d['WSPD'].mean().round(2) for d in station_data]
+station_dirs = [d['WDIR'].mean().round(2) for d in station_data]
+
+d1 = {
+    'lat': [28.521, 27.195, 29.296],
+    'lon': [-88.289, -90.027, -88.842],
+    'name': STATIONS,
+    'cWind': station_winds,
+    'cDirection': station_dirs,
+}
 
 df = pd.DataFrame(data=d1)
 
