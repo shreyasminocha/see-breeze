@@ -5,11 +5,10 @@ import pandas as pd
 import numpy as np
 import plotly.figure_factory as ff
 import numpy as np
-import altair_viewer
 
 STATIONS = ['KIKT', 'KBQX', 'KMIS']
 
-st.title('This Blows')
+st.title('See Breeze')
 
 @st.cache
 def load_data():
@@ -23,7 +22,7 @@ def load_data():
     data = data.replace('MM', np.nan)
     return data
 
-st.subheader('Number of pickups by hour')
+st.subheader('A Visualization of Wind Speed')
 
 selected_station = st.sidebar.selectbox(label='Station', index=0, options=STATIONS)
 DATA_URL = f'https://www.ndbc.noaa.gov/data/realtime2/{selected_station}.txt'
@@ -81,7 +80,8 @@ st.sidebar.plotly_chart(fig, use_container_width=True)
 np.random.seed(42)
 source = pd.DataFrame(np.cumsum(np.random.randn(100, 3), 0).round(2),
                     columns=['KMIS', 'KAPT', 'KIKT'], index=pd.RangeIndex(100, name='Time'))
-source = source.reset_index().melt('Time', var_name='Station', value_name='Wind Direction')
+
+source = source.reset_index().melt('Time', var_name='Station', value_name='Wind Direction (in m/s)')
 
 # Create a selection that chooses the nearest point & selects based on x-value
 nearest = alt.selection(type='single', nearest=True, on='mouseover',
@@ -90,7 +90,7 @@ nearest = alt.selection(type='single', nearest=True, on='mouseover',
 # The basic line
 line = alt.Chart(source).mark_line(interpolate='basis').encode(
     x='Time:Q',
-    y='Wind Direction:Q',
+    y='Wind Direction (in m/s):Q',
     color='Station:N'
 )
 
@@ -117,7 +117,7 @@ points = line.mark_point().encode(
 
 # Draw text labels near the points, and highlight based on selection
 text = line.mark_text(align='left', dx=5, dy=-5).encode(
-    text=alt.condition(nearest, 'Wind Direction:Q', alt.value(' '))
+    text=alt.condition(nearest, 'Wind Direction (in m/s):Q', alt.value(' '))
 )
 
 
