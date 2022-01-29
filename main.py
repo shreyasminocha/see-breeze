@@ -20,7 +20,9 @@ data_load_state.text('Done! (using st.cache)')
 st.subheader('Number of pickups by hour')
 
 stations = ['KIKT', 'KBQX', 'KMIS']
-country = st.sidebar.selectbox(label='Station', index=0, options=stations)
+selected_station = st.sidebar.selectbox(label='Station', index=0, options=stations)
+
+date = st.sidebar.date_input(label='Day')
 
 fig = go.Figure(data=
     go.Scatterpolar(
