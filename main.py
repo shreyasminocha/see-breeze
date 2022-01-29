@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import plotly.figure_factory as ff
 import numpy as np
+from PIL import Image
 
 STATIONS = ['KIKT', 'KBQX', 'KMIS']
 
@@ -14,7 +15,12 @@ st.set_page_config(
     initial_sidebar_state='expanded',
 )
 
+
 st.title('See Breeze')
+image = Image.open('/Users/michaelwong/Desktop/468px-NOAA_logo.svg.png')
+
+st.image(image, width = 100, caption='(Not affiliated)')
+
 
 @st.cache
 def load_data():
