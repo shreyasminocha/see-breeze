@@ -1,5 +1,5 @@
 import streamlit as st
-import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
@@ -29,13 +29,13 @@ st.subheader('Number of pickups by hour')
 hist_values = np.histogram(data[DATE_COLUMN].dt.hour, bins=24, range=(0,24))[0]
 st.bar_chart(hist_values)
 
-df = px.data.wind()
-fig = px.scatter_polar(df, r="frequency", theta="direction")
+fig = go.Figure(data=
+    go.Scatterpolar(
+        r = [0.5, 1, 2, 2.5, 3, 4],
+        theta = [35, 70, 120, 155, 205, 240],
+        mode = 'markers',
+    ))
+
+fig.update_layout(showlegend=False)
+
 st.plotly_chart(fig, use_container_width=True)
-
-# Some number in the range 0-23
-hour_to_filter = st.slider('hour', 0, 23, 17)
-filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
-
-st.subheader('Map of all pickups at %s:00' % hour_to_filter)
-st.map(filtered_data)
