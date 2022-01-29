@@ -1,3 +1,4 @@
+from select import select
 import streamlit as st
 import altair as alt
 import plotly.graph_objects as go
@@ -5,9 +6,10 @@ import pandas as pd
 import numpy as np
 import plotly.figure_factory as ff
 import numpy as np
-from PIL import Image
+import pydeck as pdk
 
-STATIONS = ['KIKT', 'KBQX', 'KMIS']
+
+STATIONS = ['KIKT', 'KAPT', 'KMIS']
 
 st.set_page_config(
     page_title='See Breeze',
@@ -35,13 +37,88 @@ def load_data():
 
     return data
 
+st.subheader('Predict wind speed and direction within 72 hours')
+
 selected_station = st.sidebar.selectbox(label='Station', index=0, options=STATIONS)
 DATA_URL = f'https://www.ndbc.noaa.gov/data/realtime2/{selected_station}.txt'
 
 data_load_state = st.text('Loading data...')
 data = load_data()
-data_load_state.text('Done! (using st.cache)')
+data_load_state.text(f'Loaded data for {selected_station}!')
 
+#MAP BEGINS 
+
+d1 = {'lat': [28.521, 29.296, 27.195], 'lon': [-88.289, -88.842, -90.027], 'name':['KIKT', 'KMIS','KATP'], 'cWind':[100,300,500], 'cDirection':[0,120,90]}
+
+df = pd.DataFrame(data=d1)
+
+tooltip = {
+    "html":
+        "<b>Station Name:</b> {name} <br/>"
+        "<b>Current Wind Speed:</b> {cWind} mph<br/>"
+        "<b>Current Wind Direction:</b> {cDirection} degrees<br/>",
+    "style": {
+        "backgroundColor": "steelblue",
+        "color": "white ",
+    }
+}
+    
+colorLayer = pdk.Layer(
+            'ScatterplotLayer',
+            data=df,
+            get_position='[lon, lat]',
+            get_color='[50, 59, 200, 160]',
+            get_radius=15000,
+            pickable=True,
+            onClick=True,
+            filled=True,
+            line_width_min_pixels=10,
+            opacity=2,
+        )
+
+textLayer = pdk.Layer(
+            type='TextLayer',
+            id='text-layer',
+            data=df,
+            pickable=False,
+            get_position=['lon', 'lat'],
+            get_text='name',
+            get_color='[255,255,255]',
+            billboard=False,
+            get_size=10,
+            get_angle=0,
+            # Note that string constants in pydeck are explicitly passed as strings
+            # This distinguishes them from columns in a data set
+            get_text_anchor='"middle"',
+            get_alignment_baseline='"center"'
+)
+
+st.pydeck_chart(pdk.Deck(
+    map_style='mapbox://styles/mapbox/light-v9',
+    initial_view_state=pdk.ViewState(
+        latitude=30,
+        longitude=-90,
+        zoom=6,
+        pitch=0,
+    ),
+    layers=[colorLayer, textLayer,
+    ],
+    tooltip=tooltip
+))
+
+
+
+#MAP ENDS
+
+text = '''
+
+---
+
+'''
+
+st.markdown(text)
+
+#plot
 st.subheader('Wind Speed for the Past 45 days')
 
 min_date, max_date = data.index.min(), data.index.max()
