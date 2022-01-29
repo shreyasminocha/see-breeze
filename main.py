@@ -1,7 +1,12 @@
 import streamlit as st
+import altair as alt
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
+import plotly.figure_factory as ff
+import numpy as np
+
+
 
 st.title('This Blows')
 
@@ -17,13 +22,24 @@ data_load_state = st.text('Loading data...')
 data = load_data()
 data_load_state.text('Done! (using st.cache)')
 
-st.subheader('Number of pickups by hour')
+#plot
+st.subheader('Wind Speed for the Past 45 days')
+chart_data = pd.DataFrame(
+     np.random.randn(20, 3),
+     columns=['KIKT', 'KAPT', 'KMIS'])
+
+st.line_chart(chart_data)
+
+
+#plotly chart
+
 
 stations = ['KIKT', 'KBQX', 'KMIS']
 selected_station = st.sidebar.selectbox(label='Station', index=0, options=stations)
 
 date = st.sidebar.date_input(label='Day')
 
+#polar plot
 fig = go.Figure(data=
     go.Scatterpolar(
         r = [0.5, 1, 2, 2.5, 3, 4],
