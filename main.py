@@ -121,7 +121,7 @@ df = pd.DataFrame(data=d1)
 tooltip = {
     "html":
         "<b>Station Name:</b> {name} <br/>"
-        "<b>Current Wind Speed:</b> {cWind} mph<br/>"
+        "<b>Current Wind Speed:</b> {cWind} m/s<br/>"
         "<b>Current Wind Direction:</b> {cDirection} degrees<br/>",
     "style": {
         "backgroundColor": "steelblue",
