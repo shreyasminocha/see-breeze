@@ -9,7 +9,7 @@ import numpy as np
 import pydeck as pdk
 
 
-STATIONS = ['KIKT', 'KAPT', 'KMIS']
+STATIONS = ['KIKT', 'KATP', 'KMIS']
 
 st.set_page_config(
     page_title='See Breeze',
