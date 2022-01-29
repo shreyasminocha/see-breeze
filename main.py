@@ -160,7 +160,7 @@ textLayer = pdk.Layer(
 st.pydeck_chart(pdk.Deck(
     map_style='mapbox://styles/mapbox/light-v9',
     initial_view_state=pdk.ViewState(
-        latitude=30,
+        latitude=28.5,
         longitude=-90,
         zoom=6,
         pitch=0,
@@ -197,6 +197,9 @@ fig = go.Figure(
 )
 
 fig.update_layout(
+    title=f'Mean wind on {date}',
+    title_x=0.5,
+    title_y=0,
     showlegend=False,
     polar={
         'radialaxis': {
@@ -206,7 +209,7 @@ fig.update_layout(
     },
     width=315,
     margin={
-        't': 0, 'r': 25, 'b': 0, 'l': 25,
+        't': 0, 'r': 25, 'b': 10, 'l': 25,
         'pad': 0,
     },
 )
