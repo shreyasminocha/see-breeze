@@ -28,8 +28,6 @@ def load_data():
     data = data.replace('MM', np.nan)
     return data
 
-st.subheader('A Visualization of Wind Speed')
-
 selected_station = st.sidebar.selectbox(label='Station', index=0, options=STATIONS)
 DATA_URL = f'https://www.ndbc.noaa.gov/data/realtime2/{selected_station}.txt'
 
@@ -37,12 +35,7 @@ data_load_state = st.text('Loading data...')
 data = load_data()
 data_load_state.text('Done! (using st.cache)')
 
-#plot
 st.subheader('Wind Speed for the Past 45 days')
-chart_data = pd.DataFrame(np.random.randn(20, 3))
-
-st.line_chart(chart_data)
-
 
 min_date, max_date = data.index.min(), data.index.max()
 
@@ -142,4 +135,5 @@ base = alt.layer(
 ).properties(
     width=600, height=300
 )
+
 base
