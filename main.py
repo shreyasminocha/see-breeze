@@ -58,12 +58,13 @@ mean_wind_speed = rows_for_day['WSPD'].astype(float).mean()
 mean_wind_direction = rows_for_day['WDIR'].astype(float).mean()
 
 #polar plot
-fig = go.Figure(data=
-    go.Scatterpolar(
+fig = go.Figure(
+    data=go.Scatterpolar(
         r=[0, mean_wind_speed],
         theta=[0, mean_wind_direction],
         mode='lines+markers',
-    ))
+    ),
+)
 
 fig.update_layout(
     showlegend=False,
@@ -73,13 +74,14 @@ fig.update_layout(
             'dtick': 5,
         },
     },
+    width=315,
     margin={
-        't': 0, 'r': 0, 'b': 0, 'l': 0,
-        'pad': 1,
-    }
+        't': 0, 'r': 25, 'b': 0, 'l': 25,
+        'pad': 0,
+    },
 )
 
-st.sidebar.plotly_chart(fig, use_container_width=True)
+st.sidebar.plotly_chart(fig, config={ 'staticPlot': True })
 
 #line chart
 
