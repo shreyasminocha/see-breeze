@@ -6,17 +6,19 @@ import numpy as np
 import plotly.figure_factory as ff
 import numpy as np
 
-
+STATIONS = ['KIKT', 'KBQX', 'KMIS']
 
 st.title('This Blows')
-
-DATE_COLUMN = 'date/time'
-DATA_URL = 'https://www.ndbc.noaa.gov/data/realtime2/KIKT.txt'
 
 @st.cache
 def load_data():
     data = pd.read_csv(DATA_URL, delim_whitespace=True)
     return data
+
+st.subheader('Number of pickups by hour')
+
+selected_station = st.sidebar.selectbox(label='Station', index=0, options=STATIONS)
+DATA_URL = f'https://www.ndbc.noaa.gov/data/realtime2/{selected_station}.txt'
 
 data_load_state = st.text('Loading data...')
 data = load_data()
@@ -30,13 +32,7 @@ chart_data = pd.DataFrame(
 
 st.line_chart(chart_data)
 
-
 #plotly chart
-
-
-stations = ['KIKT', 'KBQX', 'KMIS']
-selected_station = st.sidebar.selectbox(label='Station', index=0, options=stations)
-
 date = st.sidebar.date_input(label='Day')
 
 #polar plot
