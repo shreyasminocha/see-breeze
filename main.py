@@ -110,11 +110,21 @@ base = alt.layer(
 st.altair_chart(base, use_container_width=True)
 
 st.markdown('\n---\n')
+st.subheader('Predicted Wind Speed')
+
+lalala = alt.Chart(source.reset_index()).mark_line().encode(
+    x='#YY_MM_DD:T',
+    y='WSPD:Q',
+)
+
+predicted = alt.layer(line)
+st.altair_chart(predicted, use_container_width=True)
+
 
 #MAP BEGINS
 st.subheader('Station Map')
 
-d1 = {'lat': [28.521, 29.296, 27.195], 'lon': [-88.289, -88.842, -90.027], 'name':['KIKT', 'KMIS','KATP'], 'cWind':[100,300,500], 'cDirection':[0,120,90]}
+d1 = {'lat': [28.521, 29.296, 27.195], 'lon': [-88.289, -88.842, -90.027], 'name':['KIKT', 'KMIS','KATP'], 'cWind':[3.6, 6.17, 7.2], 'cDirection':[300, 350, 330]}
 
 df = pd.DataFrame(data=d1)
 
